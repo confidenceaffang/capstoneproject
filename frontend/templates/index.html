@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>starting code</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="relative">
+    <section class="relative h-screen w-full">
+      <img
+        src="./static/career.jpg"
+        alt="solo traveler"
+        class="absolute top-0 left-0 w-full h-full object-cover z-0"
+      />
+
+      <nav
+        class="fixed font-semibold top-24 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 justify-between flex gap-4 bg-black bg-opacity-60 px-8 py-4 rounded-full text-white shadow-xl backdrop-blur-md"
+      >
+        <button
+          class="rounded-full py-3 px-6 bg-gray-800 hover:bg-gray-900 transition hover:cursor-pointer"
+        >
+          Careers
+        </button>
+        <button
+          class="rounded-full py-3 px-6 bg-gray-800 hover:bg-gray-900 transition hover:cursor-pointer"
+        >
+          Majors
+        </button>
+
+        <button
+          class="rounded-full py-3 px-6 bg-gray-800 hover:bg-gray-900 transition hover:cursor-pointer"
+        >
+          Log In
+        </button>
+        <button
+          class="rounded-full py-3 px-6 bg-gradient-to-r from-purple-900 to-pink-500 transition hover:cursor-pointer"
+        >
+          Get Started
+        </button>
+      </nav>
+    </section>
+
+    <section class="bg-black text-white py-20 text-center">
+      <h2 class="text-4xl font-bold mb-4">Explore Career Paths</h2>
+    </section>
+
+    <section class="bg-gray-100 py-20 text-center">
+      <h2 class="text-3xl font-semibold mb-4">More Content</h2>
+      <p class="text-base">This is just a placeholder. Keep scrolling!</p>
+    </section>
+  </body>
 </html>
