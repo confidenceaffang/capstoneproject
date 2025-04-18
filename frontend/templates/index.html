@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
   </head>
   <body class="relative">
     <section class="relative h-screen w-full">
@@ -27,274 +31,541 @@
         >
           Majors
         </button>
-
-        <button
-          class="rounded-full py-3 px-6 bg-gray-800 hover:bg-gray-900 transition hover:cursor-pointer"
-        >
-          Log In
-        </button>
-        <button
-          class="rounded-full py-3 px-6 bg-gradient-to-r from-purple-900 to-pink-500 transition hover:cursor-pointer"
-        >
-          Get Started
-        </button>
+        <a href="/login">
+          <button
+            class="rounded-full py-3 px-6 bg-gray-800 hover:bg-gray-900 transition hover:cursor-pointer"
+          >
+            Log In
+          </button>
+        </a>
+        <a href="/signup">
+          <button
+            class="rounded-full py-3 px-6 bg-gradient-to-r from-purple-900 to-pink-500 transition hover:cursor-pointer"
+          >
+            Get Started
+          </button>
+        </a>
       </nav>
     </section>
 
     <section class="bg-black text-white py-20 text-center">
       <h2 class="text-4xl font-bold mb-4">Explore Career Paths</h2>
-  <div class="mx-20 px-4 py-8">
-    <div class="overflow-x-auto">
-      <div class="flex space-x-6">
-        {% for job in jobs %}
-          <div class="w-[400px] h-[370px] bg-gradient-to-tr from-black via-purple-500 to-pink-500 rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow flex-shrink-0">
-            <div class="p-6">
-            <img src="{{ url_for('static', filename='images/' + job.image) }}" alt="{{ job.title }}" class="w-full h-64 object-cover rounded-3xl">
-            </div>
-            <div class="p-4">
-              <h2 class="text-xl font-semibold text-gray-300">{{ job.title }}</h2>
-            </div>
+      <div x-data="cardDealer()">
+        <div
+          class="min-h-screen relative flex flex-col lg:flex-row items-center justify-center px-3 space-x-12"
+        >
+          <div class="relative w-full max-w-5xl h-[350px] lg:w-[60%]">
+            <template x-for="(card, index) in visibleCards" :key="card.id">
+              <div
+                class="absolute top-0 transition-all duration-500 ease-in-out"
+                :style="getCardStyle(index)"
+              >
+                <div
+                  class="w-[250px] h-[350px] bg-gradient-to-tr from-black via-purple-700 to-pink-600 rounded-xl shadow-xl overflow-hidden"
+                >
+                  <img
+                    :src="card.image"
+                    class="w-full h-full object-cover opacity-90 rounded-xl"
+                  />
+                </div>
+              </div>
+            </template>
           </div>
 
-        {% endfor %}
-      </div>
-    </div>
+          <div class="text-left max-w-sm relative z-10 lg:text-left lg:ml-8">
+            <h2 class="text-3xl font-bold mb-4" x-text="cards[0].title"></h2>
+            <p
+              class="text-gray-300"
+              x-text="cards[0].description || 'No description available.'"
+            ></p>
+          </div>
+        </div>
 
-  </div>
+        <div class="space-x-6 mt-8 lg:mt-0">
+          <button
+            @click="prevCard"
+            class="px-6 py-3 bg-white text-black rounded-lg shadow hover:bg-gray-200 transition"
+          >
+            Previous
+          </button>
+
+          <button
+            @click="nextCard"
+            class="px-6 py-3 bg-white text-black rounded-lg shadow hover:bg-gray-200 transition"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+      <script>
+        function cardDealer() {
+          return {
+            cards: [
+              {
+                id: 1,
+                title: "Software Engineer",
+                image: "/static/images/software_developer.webp",
+                description:
+                  "A software engineer builds and maintains computer programs and apps.",
+              },
+              {
+                id: 2,
+                title: "Doctor",
+                image: "/static/images/doctor.avif",
+                description:
+                  " Doctors diagnose and treat illnesses to help people stay healthy.",
+              },
+              {
+                id: 3,
+                title: "Chef",
+                image: "/static/images/chef.jpg",
+                description:
+                  "Chefs prepare and cook food in restaurants and other food establishments.",
+              },
+              {
+                id: 4,
+                title: "Chemist",
+                image: "/static/images/chem.jpg",
+                description:
+                  "Chemists study substances and create new products like medicines and cleaning agents.",
+              },
+              {
+                id: 5,
+                title: "Teacher",
+                image: "/static/images/teacher.jpg",
+                description:
+                  "Teachers help students learn new things and develop skills in various subjects.",
+              },
+              {
+                id: 6,
+                title: "Zoologist",
+                image: "/static/images/zoo.jpg",
+                description:
+                  "Zoologists study animals and work to protect them and their habitats.",
+              },
+              {
+                id: 7,
+                title: "Writer",
+                image: "/static/images/writer.jpg",
+                description:
+                  "Writers create stories, articles, and content for books, websites, and more.",
+              },
+              {
+                id: 8,
+                title: "Astronomer",
+                image: "/static/images/astro.jpg",
+                description:
+                  "Astronomers study stars, planets, and space to learn more about the universe.",
+              },
+              {
+                id: 9,
+                title: "Archeologist",
+                image: "/static/images/arch.jpg",
+                description:
+                  "Archaeologists dig and study old artifacts to understand ancient cultures.",
+              },
+              {
+                id: 10,
+                title: "Aerospace Engineer",
+                image: "/static/images/aero.webp",
+                description:
+                  "Aerospace engineers design and build aircraft, rockets, and spacecraft.",
+              },
+            ],
+            get visibleCards() {
+              return this.cards.slice(0, 10);
+            },
+            getCardStyle(index) {
+              const offsetX = index * 40;
+              const z = 50 - index;
+              const rotate = index * -2;
+              return `transform: translateX(${offsetX}px) rotate(${rotate}deg); z-index: ${z};`;
+            },
+            nextCard() {
+              const topCard = this.cards.shift();
+              this.cards.push(topCard);
+            },
+            prevCard() {
+              const topCard = this.cards.pop();
+              this.cards.unshift(topCard);
+            },
+          };
+        }
+      </script>
     </section>
 
-<section class="bg-black text-white py-20 px-10">
-  <h2 class="text-4xl font-bold text-center mb-10">Major Recommendations</h2>
+    <section class="bg-black text-white py-20 px-10">
+      <h2 class="text-4xl font-bold text-center mb-10">
+        Major Recommendations
+      </h2>
 
-  <div class="grid grid-cols-6 auto-rows-[200px] gap-4">
+      <div class="grid grid-cols-6 auto-rows-[200px] gap-4">
+        <div
+          class="col-span-2 row-span-2 bg-gradient-to-br from-purple-700 to-pink-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group"
+        >
+          <img
+            src="./static/images/majors/computer_science.jpg"
+            alt="Computer Science"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
 
-    <!-- Card 1 -->
-<div class="col-span-2 row-span-2 bg-gradient-to-br from-purple-700 to-pink-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group">
-  <!-- Image -->
-  <img src="./static/images/majors/computer_science.jpg" alt="Computer Science" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-
-  <!-- Text -->
-  <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Computer Science</h3>
-      <p class="text-sm">Software dev, AI, and cybersecurity careers.</p>
-    </div>
-  </div>
-</div>
-
-
-
-    <!-- Card 2 -->
-    <div class="col-span-2 row-span-1 bg-gradient-to-br from-indigo-600 to-blue-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-       <img src="./static/images/majors/psychology.jpg" alt="Psychology" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-
-      <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-xl font-semibold">Psychology</h3>
-      <p class="text-sm text-gray-200">Understand human behavior & mind.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="col-span-2 row-span-2 bg-gradient-to-br from-pink-600 to-red-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-      <img src="./static/images/majors/ba.jpg" alt="Business Administration" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Business Administration</h3>
-      <p class="text-sm">Entrepreneurship, marketing, and more.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="col-span-3 row-span-1 bg-gradient-to-br from-teal-500 to-green-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-       <img src="./static/images/majors/envs.jpg" alt="Environmental Science" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Environmental Science</h3>
-      <p class="text-sm">Study sustainability and ecosystems.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 5 -->
-    <div class="col-span-1 row-span-1 bg-gradient-to-br from-yellow-500 to-orange-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-       <img src="./static/images/majors/fa.jpeg" alt="Fine Arts" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Fine Arts</h3>
-      <p class="text-sm">Explore creativity through expression.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 6 -->
-    <div class="col-span-2 row-span-1 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-     <img src="./static/images/majors/mce.jfif" alt="Machanical Engineering" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Mechanical Engineering</h3>
-      <p class="text-sm">Design and innovate physical systems.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 7 -->
-    <div class="col-span-2 row-span-2 bg-gradient-to-br from-blue-900 to-purple-600 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-        <img src="./static/images/majors/bio.jpg" alt="Biology" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Biology</h3>
-      <p class="text-sm">Life sciences, genetics, and bio research.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 8 -->
-    <div class="col-span-1 row-span-1 bg-gradient-to-br from-pink-700 to-yellow-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-      <img src="./static/images/majors/edu.jpg" alt="Education" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Education</h3>
-      <p class="text-sm">Make a difference through teaching.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 9 -->
-    <div class="col-span-3 row-span-1 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group">
-      <img src="./static/images/majors/it.jpg" alt="Information Technology" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Information Technology</h3>
-      <p class="text-sm">Networks, security, and cloud computing.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 10 -->
-    <div class="col-span-2 row-span-1 bg-gradient-to-br from-lime-500 to-emerald-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 flex flex-col relative group">
-      <img src="./static/images/majors/nursing.jpg" alt="Nursing" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Nursing</h3>
-      <p class="text-sm">Healthcare and patient care excellence.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 11 -->
-    <div class="col-span-2 row-span-1 bg-gradient-to-br from-rose-500 to-fuchsia-600 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 cursor-pointer relative group flex flex-col">
-       <img src="./static/images/majors/mds.jpg" alt="Media Studies" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Media Studies</h3>
-      <p class="text-sm">Journalism, film, and digital culture.</p>
-    </div>
-  </div>
-    </div>
-
-    <!-- Card 12 -->
-    <div class="col-span-2 row-span-2 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col">
-      <img src="./static/images/majors/archi.jfif" alt="Architecture" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Architecture</h3>
-      <p class="text-sm">Design functional and aesthetic structures.</p>
-    </div>
-  </div>
-    </div>
-
-
-       <div class="col-span-3 row-span-2 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col">
-      <img src="./static/images/majors/phy.avif" alt="Physics" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Physics</h3>
-      <p class="text-sm"> Study the nature and properties of matter and energy in the universe.</p>
-    </div>
-  </div>
-    </div>
-
-       <div class="col-span-1 row-span-1 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col">
-      <img src="./static/images/majors/pbr.jfif" alt="Public Relations" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Public Relations</h3>
-      <p class="text-sm">Manage a brand's image, communications, and relationships with the public and media.</p>
-    </div>
-  </div>
-    </div>
-
-      <div class="col-span-1 row-span-1 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col">
-      <img src="./static/images/majors/cmj.jpg" alt="Criminal Justice" class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"/>
-     <div class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-    <div>
-      <h3 class="text-2xl font-semibold">Criminal Justice</h3>
-      <p class="text-sm">Study the legal system, law enforcement, and crime prevention methods.</p>
-    </div>
-  </div>
-    </div>
-
-  </div>
-</section>
-
-
-<footer class="text-center text-white bg-gradient-to-tr from-black via-purple-500 to-pink-500">
-
-  <div class="w-full">
-
-    <section class="">
-
-      <div class="row text-center flex justify-center text-center space-x-20 items-center pt-5">
-
-        <div class="col-md-2">
-          <h6 class="text-uppercase font-weight-bold">
-            <a href="#!" class="text-white">About Us</a>
-          </h6>
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Computer Science</h3>
+              <p class="text-sm">
+                Software dev, AI, and cybersecurity careers.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-2">
-          <h6 class="text-uppercase font-weight-bold">
-            <a href="#!" class="text-white">Products</a>
-          </h6>
+        <div
+          class="col-span-2 row-span-1 bg-gradient-to-br from-indigo-600 to-blue-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/psychology.jpg"
+            alt="Psychology"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-xl font-semibold">Psychology</h3>
+              <p class="text-sm text-gray-200">
+                Understand human behavior &#x26; mind.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-2">
-          <h6 class="text-uppercase font-weight-bold">
-            <a href="#!" class="text-white">Help</a>
-          </h6>
+        <div
+          class="col-span-2 row-span-2 bg-gradient-to-br from-pink-600 to-red-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/ba.jpg"
+            alt="Business Administration"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Business Administration</h3>
+              <p class="text-sm">Entrepreneurship, marketing, and more.</p>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-2">
-          <h6 class="text-uppercase font-weight-bold">
-            <a href="#!" class="text-white">Contact</a>
-          </h6>
+        <div
+          class="col-span-3 row-span-1 bg-gradient-to-br from-teal-500 to-green-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/envs.jpg"
+            alt="Environmental Science"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Environmental Science</h3>
+              <p class="text-sm">Study sustainability and ecosystems.</p>
+            </div>
+          </div>
         </div>
 
+        <div
+          class="col-span-1 row-span-1 bg-gradient-to-br from-yellow-500 to-orange-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/fa.jpeg"
+            alt="Fine Arts"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Fine Arts</h3>
+              <p class="text-sm">Explore creativity through expression.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 row-span-1 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/mce.jfif"
+            alt="Machanical Engineering"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Mechanical Engineering</h3>
+              <p class="text-sm">Design and innovate physical systems.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 row-span-2 bg-gradient-to-br from-blue-900 to-purple-600 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/bio.jpg"
+            alt="Biology"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Biology</h3>
+              <p class="text-sm">Life sciences, genetics, and bio research.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-1 row-span-1 bg-gradient-to-br from-pink-700 to-yellow-400 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/edu.jpg"
+            alt="Education"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Education</h3>
+              <p class="text-sm">Make a difference through teaching.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-3 row-span-1 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/it.jpg"
+            alt="Information Technology"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Information Technology</h3>
+              <p class="text-sm">Networks, security, and cloud computing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 row-span-1 bg-gradient-to-br from-lime-500 to-emerald-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 flex flex-col relative group"
+        >
+          <img
+            src="./static/images/majors/nursing.jpg"
+            alt="Nursing"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Nursing</h3>
+              <p class="text-sm">Healthcare and patient care excellence.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 row-span-1 bg-gradient-to-br from-rose-500 to-fuchsia-600 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 cursor-pointer relative group flex flex-col"
+        >
+          <img
+            src="./static/images/majors/mds.jpg"
+            alt="Media Studies"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Media Studies</h3>
+              <p class="text-sm">Journalism, film, and digital culture.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-2 row-span-2 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col"
+        >
+          <img
+            src="./static/images/majors/archi.jfif"
+            alt="Architecture"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Architecture</h3>
+              <p class="text-sm">Design functional and aesthetic structures.</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-3 row-span-2 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col"
+        >
+          <img
+            src="./static/images/majors/phy.avif"
+            alt="Physics"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Physics</h3>
+              <p class="text-sm">
+                Study the nature and properties of matter and energy in the
+                universe.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-1 row-span-1 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col"
+        >
+          <img
+            src="./static/images/majors/pbr.jfif"
+            alt="Public Relations"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Public Relations</h3>
+              <p class="text-sm">
+                Manage a brand's image, communications, and relationships with
+                the public and media.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-span-1 row-span-1 bg-gradient-to-br from-gray-800 to-gray-500 rounded-2xl overflow-hidden transform transition duration-300 hover:scale-110 hover:z-10 cursor-pointer relative group flex flex-col"
+        >
+          <img
+            src="./static/images/majors/cmj.jpg"
+            alt="Criminal Justice"
+            class="h-full w-full object-cover group-hover:opacity-30 transition-opacity duration-300"
+          />
+          <div
+            class="absolute inset-0 flex justify-center items-center text-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div>
+              <h3 class="text-2xl font-semibold">Criminal Justice</h3>
+              <p class="text-sm">
+                Study the legal system, law enforcement, and crime prevention
+                methods.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
     </section>
 
+    <footer
+      class="bg-gradient-to-tr from-black via-purple-600 to-pink-500 text-white py-16"
+    >
+      <div class="w-full">
+        <!-- Navigation Links Section -->
+        <section class="mb-10">
+          <div class="flex justify-center space-x-12 text-center">
+            <div class="footer-link">
+              <h6
+                class="text-xl font-semibold uppercase hover:text-pink-300 transition-all duration-300"
+              >
+                <a href="#!" class="text-white">About Us</a>
+              </h6>
+            </div>
 
-    <section class="py-10 ">
-      <div class="row d-flex justify-content-center">
-        <div class="col-lg-8">
-          <p>
-         We hope you get the most from this website
+            <div class="footer-link">
+              <h6
+                class="text-xl font-semibold uppercase hover:text-pink-300 transition-all duration-300"
+              >
+                <a href="#!" class="text-white">Products</a>
+              </h6>
+            </div>
+
+            <div class="footer-link">
+              <h6
+                class="text-xl font-semibold uppercase hover:text-pink-300 transition-all duration-300"
+              >
+                <a href="#!" class="text-white">Help</a>
+              </h6>
+            </div>
+
+            <div class="footer-link">
+              <h6
+                class="text-xl font-semibold uppercase hover:text-pink-300 transition-all duration-300"
+              >
+                <a href="#!" class="text-white">Contact</a>
+              </h6>
+            </div>
+          </div>
+        </section>
+
+        <!-- Description Section -->
+        <section class="text-center mb-10">
+          <p class="text-2xl font-light max-w-3xl mx-auto text-gray-200">
+            Discover your perfect career with us. Explore exciting paths, get
+            inspired, and take the next step in your journey.
           </p>
-        </div>
+        </section>
+
+        <!-- Social Media Links Section -->
+        <section class="text-center mb-12">
+          <div class="flex justify-center space-x-8">
+            <a
+              href="#"
+              class="text-white hover:text-pink-300 transition-all duration-300 text-3xl"
+            >
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a
+              href="#"
+              class="text-white hover:text-pink-300 transition-all duration-300 text-3xl"
+            >
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a
+              href="#"
+              class="text-white hover:text-pink-300 transition-all duration-300 text-3xl"
+            >
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a
+              href="#"
+              class="text-white hover:text-pink-300 transition-all duration-300 text-3xl"
+            >
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </section>
       </div>
-    </section>
-
-
-
-  </div>
-
-</footer>
-
-
-
+    </footer>
   </body>
 </html>
